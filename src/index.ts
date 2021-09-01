@@ -26,7 +26,7 @@ const initApp = async () => {
   mongoose.connect(dbURI)
 
   const bot = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
-  await bot.login(process.env.BOT_TOKEN as string);
+  bot.login(process.env.BOT_TOKEN as string);
   initCommand(bot, await getGuild(bot))
 }
 
