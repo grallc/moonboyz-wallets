@@ -2,6 +2,7 @@ require('dotenv').config()
 import { Client, Intents, Guild } from 'discord.js'
 import initCommand from './command'
 import mongoose from 'mongoose'
+import checkSavedUsers from './checker'
 
 const serverId = process.env.MAIN_SERVER_ID
 
@@ -25,9 +26,12 @@ const initApp = async () => {
   }
   mongoose.connect(dbURI)
 
-  const bot = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
-  bot.login(process.env.BOT_TOKEN as string);
-  initCommand(bot, await getGuild(bot))
+  const bot = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS] })
+  bot.login(process.env.BOT_TOKEN as string)
+  const guild = await getGuild(bot)
+  initCommand(bot, guild)
+  await new Promise(resolve => setTimeout(resolve, 3000))
+  checkSavedUsers(guild)
 }
 
 initApp()

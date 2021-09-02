@@ -48,7 +48,7 @@ const initCommand = (bot: Client, guild: Guild) => {
           matchingUser.wallet = adress
           await matchingUser.save()
         }
-        interaction.reply('Your ETH wallet adress has successfully been saved!')
+        interaction.reply('Your ETH wallet adress has been successfully saved!')
       }
     }
   })
