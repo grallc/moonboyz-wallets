@@ -39,8 +39,11 @@ const initCommands = (bot: Client, guild: Guild) => {
       }
       user.send(':white_check_mark: Your ETH wallet adress has been successfully saved, be ready for the launch! :rocket: (send another adress here to update it)')
     } else if (message.content.toLowerCase() === "!wallet") {
-      message.author.send('Hi :wave: You can safely send me your ETH Adress here. Please remember we will never ask you for money on Discord!')
       message.delete()
+      if (await hasPermissions(guild, message.author.id)) {
+        message.author.send('Hi :wave: You can safely send me your ETH Adress here. Please remember we will never ask you for money on Discord!')
+        return
+      }
     }
   })
 }

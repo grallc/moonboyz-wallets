@@ -16,7 +16,7 @@ if (!shouldDmUsers) {
 const hasPermissions = async (guild: Guild, userId: string) => {
   try {
     const requiredRole = process.env.REQUIRED_ROLE || ''
-    const user = await guild.members.fetch(debugUser)
+    const user = await guild.members.fetch(userId)
     return user.roles.cache.find(role => role.id === requiredRole)
   } catch {
     return false
