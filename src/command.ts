@@ -10,12 +10,6 @@ if (!requiredRole) {
   throw new Error('Missing the REQUIRED_ROLE env variable!')
 }
 
-const channelId = process.env.CHANNEL
-
-if (!channelId) {
-  throw new Error('Missing the CHANNEL env variable!')
-}
-
 const initCommand = (bot: Client, guild: Guild) => {
   bot.on('messageCreate', async message => {
     if(message.author.bot) return;
