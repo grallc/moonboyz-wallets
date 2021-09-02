@@ -42,7 +42,7 @@ const initCommand = (bot: Client, guild: Guild) => {
       matchingUser.wallet = adress
       await matchingUser.save()
     }
-    user.send(':white_check_mark: Your ETH wallet adress has been successfully saved, be ready for the launch! :rocket:')
+    user.send(':white_check_mark: Your ETH wallet adress has been successfully saved, be ready for the launch! :rocket: (send another adress here to update it)')
   })
 }
 
