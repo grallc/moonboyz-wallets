@@ -1,4 +1,4 @@
-import { Client, Guild } from "discord.js"
+import { Client, Guild, Interaction } from "discord.js"
 import { ApplicationCommandPermissionTypes } from "discord.js/typings/enums"
 import User from './models/user.model'
 const isValidWallet = (adress: string) => new RegExp(/^0x[a-fA-F0-9]{40}$/).test(adress)
@@ -7,6 +7,12 @@ const requiredRole = process.env.REQUIRED_ROLE
 
 if (!requiredRole) {
   throw new Error('Missing the REQUIRED_ROLE env variable!')
+}
+
+const channelId = process.env.CHANNEL
+
+if (!channelId) {
+  throw new Error('Missing the CHANNEL env variable!')
 }
 
 const initCommand = (bot: Client, guild: Guild) => {
@@ -27,7 +33,7 @@ const initCommand = (bot: Client, guild: Guild) => {
   
   bot.on('interactionCreate', async interaction => {
     if (interaction.isCommand()) {
-      if (interaction.commandName === 'wallet') {
+      if (interaction.commandName === 'wallet' && interaction.channelId === channelId) {
         const adress = interaction.options.get('adress')?.value as string
         if (!isValidWallet(adress || '')) {
           return interaction.reply('Invalid ETH wallet adress')
@@ -48,7 +54,7 @@ const initCommand = (bot: Client, guild: Guild) => {
           matchingUser.wallet = adress
           await matchingUser.save()
         }
-        interaction.reply('Your ETH wallet adress has been successfully saved!')
+        interaction.reply(':white_check_mark: Your ETH wallet adress has been successfully saved, be ready for the launch! :rocket:')
       }
     }
   })
