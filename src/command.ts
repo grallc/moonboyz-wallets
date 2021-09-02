@@ -1,6 +1,7 @@
-import { Client, Guild, Interaction } from "discord.js"
-import { ApplicationCommandPermissionTypes } from "discord.js/typings/enums"
+import { Client, Guild } from "discord.js"
 import User from './models/user.model'
+import { hasPermissions } from './checker'
+
 const isValidWallet = (adress: string) => new RegExp(/^0x[a-fA-F0-9]{40}$/).test(adress)
 
 const requiredRole = process.env.REQUIRED_ROLE
@@ -16,47 +17,32 @@ if (!channelId) {
 }
 
 const initCommand = (bot: Client, guild: Guild) => {
-  bot.on('ready', async () => {
-    if (guild) {
-      await guild.commands.create({
-        description: 'Whitelists your ETH adress for the Presale',
-        name: 'wallet',
-        options: [{
-          name: "adress",
-          required: true,
-          type: 'STRING',
-          description: 'Your ETH Wallet adress'
-        }]
-      })
+  bot.on('messageCreate', async message => {
+    if(message.author.bot) return;
+    if(message.channel.type !== 'DM') return;
+    if (!await hasPermissions(guild, message.author.id)) {
+      message.author.send(`:negative_squared_cross_mark: You must be in the Presale to do this!`)
+      return
     }
-  })
-  
-  bot.on('interactionCreate', async interaction => {
-    if (interaction.isCommand()) {
-      if (interaction.commandName === 'wallet' && interaction.channelId === channelId) {
-        const adress = interaction.options.get('adress')?.value as string
-        if (!isValidWallet(adress || '')) {
-          return interaction.reply('Invalid ETH wallet adress')
-        }
+    const adress = message.content
+    const user = message.author
 
-        const user = await guild.members.fetch(interaction.user.id)
-        if (!user || !user.roles.cache.get(requiredRole)) {
-          return interaction.reply('You must be in the presale to do this!')
-        }
-        
-        const matchingUser = await User.findOne({ userId: interaction.user.id })
-        if (matchingUser === null) {
-          await new User({
-            userId: interaction.user.id,
-            wallet: adress
-          }).save()
-        } else {
-          matchingUser.wallet = adress
-          await matchingUser.save()
-        }
-        interaction.reply(':white_check_mark: Your ETH wallet adress has been successfully saved, be ready for the launch! :rocket:')
-      }
+    if (!isValidWallet(adress || '')) {
+      user.send(':negative_squared_cross_mark: Invalid ETH wallet adress')
+      return
     }
+
+    const matchingUser = await User.findOne({ userId: user.id })
+    if (matchingUser === null) {
+      await new User({
+        userId: user.id,
+        wallet: adress
+      }).save()
+    } else {
+      matchingUser.wallet = adress
+      await matchingUser.save()
+    }
+    user.send(':white_check_mark: Your ETH wallet adress has been successfully saved, be ready for the launch! :rocket:')
   })
 }
 
