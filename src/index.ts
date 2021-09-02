@@ -1,6 +1,6 @@
 require('dotenv').config()
 import { Client, Intents, Guild } from 'discord.js'
-import initCommand from './command'
+import initCommands from './command'
 import mongoose from 'mongoose'
 import { checkSavedUsers, hasPermissions } from './checker'
 
@@ -32,7 +32,7 @@ const initApp = async () => {
    })
   bot.login(process.env.BOT_TOKEN as string)
   const guild = await getGuild(bot)
-  initCommand(bot, guild)
+  initCommands(bot, guild)
   await new Promise(resolve => setTimeout(resolve, 3000))
   checkSavedUsers(guild)
 
