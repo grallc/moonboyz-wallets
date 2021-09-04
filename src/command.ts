@@ -83,7 +83,7 @@ const initCommands = (bot: Client, guild: Guild) => {
     } else if (message.content.toLowerCase() === "!wallet") {
       message.delete()
       if (await hasPermissions(guild, message.author.id)) {
-        sendMessage(message.author, 'Hi :wave: You can safely send me your ETH Adress here. Please remember we will never ask you for money on Discord!')
+        sendMessage(message.author, 'Hi :wave: You can safely send me your ETH Adress here. Please remember we will never ask you for money on Discord!\nUse `!wallet [adress]` and `!email [email]` to provide us your data.')
         return
       }
     }

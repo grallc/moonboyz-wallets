@@ -1,18 +1,6 @@
 import { Guild, GuildMember } from "discord.js";
 import User from './models/user.model'
 
-const debugUser = process.env.DEBUG_USER
-
-if (!debugUser) {
-  throw new Error('Missing the DEBUG_USER env variable!')
-}
-
-const shouldDmUsers = process.env.DM_USERS
-
-if (!shouldDmUsers) {
-  throw new Error('Missing the DM_USERS env variable!')
-}
-
 const hasPermissions = async (guild: Guild, userId: string) => {
   try {
     const requiredRole = process.env.REQUIRED_ROLE || ''
@@ -24,6 +12,18 @@ const hasPermissions = async (guild: Guild, userId: string) => {
 }
 
 const checkSavedUsers = async (guild: Guild) => {
+  const debugUser = process.env.DEBUG_USER
+
+if (!debugUser) {
+  throw new Error('Missing the DEBUG_USER env variable!')
+}
+
+const shouldDmUsers = process.env.DM_USERS
+
+if (shouldDmUsers == undefined) {
+  throw new Error('Missing the DM_USERS env variable!')
+}
+
   const requiredRole = process.env.REQUIRED_ROLE || ''
   await guild.members.fetch(debugUser)
   const role = await guild.roles.fetch(requiredRole)
