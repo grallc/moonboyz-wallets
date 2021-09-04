@@ -21,7 +21,7 @@ const sendInfosEmbed = async (user: DiscordUser) => {
     .setTitle('Presale Details')
     .addFields(
       { name: ':rotating_light: We will never ask for your personal information or private adresses (only your email and public ETH Wallet adress)', value: '\u200b' },
-      { name: 'Use `!wallet [adress]` and `!email [email]` to provide us your data.', value: '\u200b' },
+      { name: 'Use `!wallet [adress]` (example: `!wallet 0x2Cc52bA898826Efb5ba86dB1E008e80b597b303b`)\n\nthen `!email [email]` (example: `!email yourmail@gmail.com`)\n to provide us your data.', value: '\u200b' },
       { name: 'ETH Wallet Adress (Required)', value: walletValue },
       { name: 'Email Adress (Required)', value: emailValue }
     )
@@ -83,7 +83,7 @@ const initCommands = (bot: Client, guild: Guild) => {
     } else if (message.content.toLowerCase() === "!wallet") {
       message.delete()
       if (await hasPermissions(guild, message.author.id)) {
-        sendMessage(message.author, 'Hi :wave: You can safely send me your ETH Adress here. Please remember we will never ask you for money on Discord!\nUse `!wallet [adress]` and `!email [email]` to provide us your data.')
+        sendMessage(message.author, 'Hi :wave: You can safely send me your ETH Adress here. Please remember we will never ask you for money on Discord!\n\nUse `!wallet [adress]` (example: `!wallet 0x2Cc52bA898826Efb5ba86dB1E008e80b597b303b`)\n\nthen `!email [email]` (example: `!email yourmail@gmail.com`)\n to provide us your data.')
         return
       }
     }
