@@ -1,12 +1,6 @@
 import { User as DiscordUser, MessageEmbed } from "discord.js"
 import User, { IUser } from './models/user.model'
 
-const requiredRole = process.env.REQUIRED_ROLE
-
-if (!requiredRole) {
-  throw new Error('Missing the REQUIRED_ROLE env variable!')
-}
-
 const sendInfosEmbed = async (user: DiscordUser) => {
   const matchingUser = await User.findOne({ userId: user.id }) as IUser | null
   const emailValue = matchingUser !== null && matchingUser.email !== '' ? ':white_check_mark: ' + matchingUser.email : ':no_entry_sign: Not Provided'

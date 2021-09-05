@@ -6,12 +6,6 @@ import { sendMessage, sendInfosEmbed } from './messages'
 const isValidWallet = (adress: string) => new RegExp(/^0x[a-fA-F0-9]{40}$/).test(adress)
 const isValidEmail = (email: string) => new RegExp(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/).test(email)
 
-const requiredRole = process.env.REQUIRED_ROLE
-
-if (!requiredRole) {
-  throw new Error('Missing the REQUIRED_ROLE env variable!')
-}
-
 const updateData = async (userId: string, field: 'email' | 'wallet', value: string) => {
   const matchingUser = await User.findOne({ userId })
   if (matchingUser === null) {
