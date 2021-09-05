@@ -25,7 +25,11 @@ const initCommands = (bot: Client, guild: Guild) => {
 
     if (message.channel.type === 'DM') {
       if (!await hasPermissions(guild, message.author.id)) {
-        message.author.send(`:negative_squared_cross_mark: You must be in the Presale to do this!`)
+        try {
+          message.author.send(`:negative_squared_cross_mark: You must be in the Presale to do this!`)
+        } catch (e) {
+          console.log(`Failed to send a message to ${message.author.id}/${message.author.username}#${message.author.discriminator} (3)`)
+        }
         return
       }
       const user = message.author
