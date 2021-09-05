@@ -57,7 +57,11 @@ const initCommands = (bot: Client, guild: Guild) => {
     } else if (message.content.toLowerCase() === "!wallet") {
       message.delete()
       if (await hasPermissions(guild, message.author.id)) {
-        sendMessage(message.author, 'Hi :wave: You can safely send me your ETH Adress here. Please remember we will never ask you for money on Discord!\n\nUse `!wallet [adress]` (example: `!wallet 0x2Cc52bA898826Efb5ba86dB1E008e80b597b303b`)\n\nthen `!email [email]` (example: `!email yourmail@gmail.com`)\n to provide us your data.')
+        try {
+          sendMessage(message.author, 'Hi :wave: You can safely send me your ETH Adress here. Please remember we will never ask you for money on Discord!\n\nUse `!wallet [adress]` (example: `!wallet 0x2Cc52bA898826Efb5ba86dB1E008e80b597b303b`)\n\nthen `!email [email]` (example: `!email yourmail@gmail.com`)\n to provide us your data.')
+        } catch (e) {
+          console.log(`Failed to send a message to ${message.author.id}/${message.author.username}#${message.author.discriminator}`)
+        }
         return
       }
     }
