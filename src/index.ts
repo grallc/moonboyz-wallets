@@ -2,7 +2,8 @@ require('dotenv').config()
 import { Client, Intents, Guild } from 'discord.js'
 import initCommands from './command'
 import mongoose from 'mongoose'
-import { checkSavedUsers, hasPermissions } from './checker'
+import cron from 'node-cron'
+import { checkSavedUsers } from './checker'
 
 const serverId = process.env.MAIN_SERVER_ID
 
@@ -34,8 +35,11 @@ const initApp = async () => {
   const guild = await getGuild(bot)
   initCommands(bot, guild)
   await new Promise(resolve => setTimeout(resolve, 3000))
+  
   checkSavedUsers(guild)
-
+  cron.schedule('0 */2 * * *', () => {
+    checkSavedUsers(guild)
+  });
 }
 
 initApp()

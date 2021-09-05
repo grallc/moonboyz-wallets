@@ -1,5 +1,6 @@
 import { Guild, GuildMember } from "discord.js";
 import User from './models/user.model'
+import { sendInfosEmbed } from './messages'
 
 const hasPermissions = async (guild: Guild, userId: string) => {
   try {
@@ -14,15 +15,20 @@ const hasPermissions = async (guild: Guild, userId: string) => {
 const checkSavedUsers = async (guild: Guild) => {
   const debugUser = process.env.DEBUG_USER
 
-if (!debugUser) {
-  throw new Error('Missing the DEBUG_USER env variable!')
-}
+  if (!debugUser) {
+    throw new Error('Missing the DEBUG_USER env variable!')
+  }
 
-const shouldDmUsers = process.env.DM_USERS
+  const shouldDeleteUsers = process.env.DELETE_USERS
+  if (shouldDeleteUsers == undefined) {
+    throw new Error('Missing the DELETE_USERS env variable!')
+  }
 
-if (shouldDmUsers == undefined) {
-  throw new Error('Missing the DM_USERS env variable!')
-}
+  const shouldDmUsers = process.env.DM_USERS
+
+  if (shouldDmUsers == undefined) {
+    throw new Error('Missing the DM_USERS env variable!')
+  }
 
   const requiredRole = process.env.REQUIRED_ROLE || ''
   await guild.members.fetch(debugUser)
@@ -30,7 +36,10 @@ if (shouldDmUsers == undefined) {
   if (role === null) return
   const members = role.members
   const membersId = members.map(member => member.user.id)
-  await User.deleteMany({ userId: { $nin: membersId }})
+
+  if (shouldDeleteUsers === 'true') {
+    await User.deleteMany({ userId: { $nin: membersId } })
+  }
 
   if (shouldDmUsers === 'true') {
     messageMissingUsers(Array.from(members.values()))
@@ -38,8 +47,10 @@ if (shouldDmUsers == undefined) {
 }
 
 const messageMissingUsers = async (users: GuildMember[]) => {
-  users.forEach((user) => {
-    user.send(`Hey, you're in the Moonboys Presale but you still haven't sent us your ETH Wallet Adress!\nPlease reply here with your ETH Adress to be sure to be added to the Whitelist.`)
+  const usersReady = (await User.find({ $and: [{ wallet: { $ne: "" } }, { email: { $ne: "" } } ]}, { _id: 0, userId: 1 }) as { userId: string}[]).map(user => user.userId)
+  const filteredUsers = users.filter(user => !usersReady.includes(user.id))
+  filteredUsers.forEach((user) => {
+    sendInfosEmbed(user.user)
   })
 }
 
