@@ -16,11 +16,9 @@ const sendInfosEmbed = async (user: DiscordUser) => {
       { name: 'Email Adress (Required)', value: emailValue }
     )
     .setFooter('https://moon-boyz.com', 'https://pbs.twimg.com/profile_images/1431618530915635200/vvvET7nR_400x400.jpg');
-    try {
-      user.send({ embeds: [infosEmbed] })
-    } catch (e) {
+    user.send({ embeds: [infosEmbed] }).catch(e => {
       console.log(`Failed to send a message to ${user.id}/${user.username}#${user.discriminator} (1)`)
-    }
+    })
 }
 
 const sendMessage = (user: DiscordUser, message: string) => {
@@ -29,10 +27,9 @@ const sendMessage = (user: DiscordUser, message: string) => {
   .setTitle('Presale Details')
   .setDescription(message)
   .setFooter('https://moon-boyz.com', 'https://pbs.twimg.com/profile_images/1431618530915635200/vvvET7nR_400x400.jpg');
-  try {
-    user.send({ embeds: [infosEmbed] })
-  } catch (e) {
+  user.send({ embeds: [infosEmbed] }).catch(e => {
     console.log(`Failed to send a message to ${user.id}/${user.username}#${user.discriminator} (2)`)
-  }}
+  })
+}
 
 export { sendInfosEmbed, sendMessage }
